@@ -9,6 +9,7 @@ pub mod graph {
     pub mod node {
         pub const MAIN_PASS: &str = "main_pass";
         pub const TONEMAPPING: &str = "tonemapping";
+        pub const FXAA: &str = "fxaa";
         pub const UPSCALING: &str = "upscaling";
     }
 }
@@ -38,7 +39,7 @@ use bevy_render::{
 };
 use bevy_utils::{FloatOrd, HashMap};
 
-use crate::{tonemapping::TonemappingNode, upscaling::UpscalingNode};
+use crate::{fxaa::FXAANode, tonemapping::TonemappingNode, upscaling::UpscalingNode};
 
 pub struct Core3dPlugin;
 
@@ -64,12 +65,14 @@ impl Plugin for Core3dPlugin {
 
         let pass_node_3d = MainPass3dNode::new(&mut render_app.world);
         let tonemapping = TonemappingNode::new(&mut render_app.world);
+        let fxaa = FXAANode::new(&mut render_app.world);
         let upscaling = UpscalingNode::new(&mut render_app.world);
         let mut graph = render_app.world.resource_mut::<RenderGraph>();
 
         let mut draw_3d_graph = RenderGraph::default();
         draw_3d_graph.add_node(graph::node::MAIN_PASS, pass_node_3d);
         draw_3d_graph.add_node(graph::node::TONEMAPPING, tonemapping);
+        draw_3d_graph.add_node(graph::node::FXAA, fxaa);
         draw_3d_graph.add_node(graph::node::UPSCALING, upscaling);
         let input_node_id = draw_3d_graph.set_input(vec![SlotInfo::new(
             graph::input::VIEW_ENTITY,
@@ -95,6 +98,14 @@ impl Plugin for Core3dPlugin {
             .add_slot_edge(
                 input_node_id,
                 graph::input::VIEW_ENTITY,
+                graph::node::FXAA,
+                UpscalingNode::IN_VIEW,
+            )
+            .unwrap();
+        draw_3d_graph
+            .add_slot_edge(
+                input_node_id,
+                graph::input::VIEW_ENTITY,
                 graph::node::UPSCALING,
                 UpscalingNode::IN_VIEW,
             )
@@ -103,7 +114,10 @@ impl Plugin for Core3dPlugin {
             .add_node_edge(graph::node::MAIN_PASS, graph::node::TONEMAPPING)
             .unwrap();
         draw_3d_graph
-            .add_node_edge(graph::node::TONEMAPPING, graph::node::UPSCALING)
+            .add_node_edge(graph::node::TONEMAPPING, graph::node::FXAA)
+            .unwrap();
+        draw_3d_graph
+            .add_node_edge(graph::node::FXAA, graph::node::UPSCALING)
             .unwrap();
         graph.add_sub_graph(graph::NAME, draw_3d_graph);
     }

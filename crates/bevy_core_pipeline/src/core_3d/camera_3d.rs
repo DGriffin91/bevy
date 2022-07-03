@@ -1,4 +1,4 @@
-use crate::{clear_color::ClearColorConfig, tonemapping::Tonemapping};
+use crate::{clear_color::ClearColorConfig, fxaa::FXAA, tonemapping::Tonemapping};
 use bevy_ecs::{prelude::*, query::QueryItem};
 use bevy_reflect::{Reflect, ReflectDeserialize, ReflectSerialize};
 use bevy_render::{
@@ -67,6 +67,7 @@ pub struct Camera3dBundle {
     pub global_transform: GlobalTransform,
     pub camera_3d: Camera3d,
     pub tonemapping: Tonemapping,
+    pub fxaa: FXAA,
 }
 
 // NOTE: ideally Perspective and Orthographic defaults can share the same impl, but sadly it breaks rust's type inference
@@ -75,6 +76,7 @@ impl Default for Camera3dBundle {
         Self {
             camera_render_graph: CameraRenderGraph::new(crate::core_3d::graph::NAME),
             tonemapping: Tonemapping { is_enabled: true },
+            fxaa: FXAA { is_enabled: false },
             camera: Default::default(),
             projection: Default::default(),
             visible_entities: Default::default(),
