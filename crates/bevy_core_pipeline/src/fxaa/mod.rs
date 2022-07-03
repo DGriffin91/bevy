@@ -57,7 +57,7 @@ pub struct FXAAPipeline {
 
 impl FromWorld for FXAAPipeline {
     fn from_world(render_world: &mut World) -> Self {
-        let tonemap_texture_bind_group = render_world
+        let fxaa_texture_bind_group = render_world
             .resource::<RenderDevice>()
             .create_bind_group_layout(&BindGroupLayoutDescriptor {
                 label: Some("fxaa_texture_bind_group_layout"),
@@ -66,7 +66,7 @@ impl FromWorld for FXAAPipeline {
                         binding: 0,
                         visibility: ShaderStages::FRAGMENT,
                         ty: BindingType::Texture {
-                            sample_type: TextureSampleType::Float { filterable: false },
+                            sample_type: TextureSampleType::Float { filterable: true },
                             view_dimension: TextureViewDimension::D2,
                             multisampled: false,
                         },
@@ -75,15 +75,15 @@ impl FromWorld for FXAAPipeline {
                     BindGroupLayoutEntry {
                         binding: 1,
                         visibility: ShaderStages::FRAGMENT,
-                        ty: BindingType::Sampler(SamplerBindingType::NonFiltering),
+                        ty: BindingType::Sampler(SamplerBindingType::Filtering),
                         count: None,
                     },
                 ],
             });
 
-        let tonemap_descriptor = RenderPipelineDescriptor {
+        let fxaa_descriptor = RenderPipelineDescriptor {
             label: Some("fxaa pipeline".into()),
-            layout: Some(vec![tonemap_texture_bind_group.clone()]),
+            layout: Some(vec![fxaa_texture_bind_group.clone()]),
             vertex: fullscreen_shader_vertex_state(),
             fragment: Some(FragmentState {
                 shader: FXAA_SHADER_HANDLE.typed(),
@@ -102,7 +102,7 @@ impl FromWorld for FXAAPipeline {
 
         let blit_descriptor = RenderPipelineDescriptor {
             label: Some("blit pipeline".into()),
-            layout: Some(vec![tonemap_texture_bind_group.clone()]),
+            layout: Some(vec![fxaa_texture_bind_group.clone()]),
             vertex: fullscreen_shader_vertex_state(),
             fragment: Some(FragmentState {
                 shader: BLIT_SHADER_HANDLE.typed(),
@@ -120,8 +120,8 @@ impl FromWorld for FXAAPipeline {
         };
         let mut cache = render_world.resource_mut::<PipelineCache>();
         FXAAPipeline {
-            hdr_texture_bind_group: tonemap_texture_bind_group,
-            fxaa_pipeline_id: cache.queue_render_pipeline(tonemap_descriptor),
+            hdr_texture_bind_group: fxaa_texture_bind_group,
+            fxaa_pipeline_id: cache.queue_render_pipeline(fxaa_descriptor),
             blit_pipeline_id: cache.queue_render_pipeline(blit_descriptor),
         }
     }

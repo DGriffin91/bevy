@@ -6,13 +6,14 @@ use bevy_ecs::query::QueryState;
 use bevy_render::{
     render_graph::{Node, NodeRunError, RenderGraphContext, SlotInfo, SlotType},
     render_resource::{
-        BindGroup, BindGroupDescriptor, BindGroupEntry, BindingResource, LoadOp, Operations,
-        PipelineCache, RenderPassColorAttachment, RenderPassDescriptor, SamplerDescriptor,
-        TextureViewId,
+        BindGroup, BindGroupDescriptor, BindGroupEntry, BindingResource, FilterMode, LoadOp,
+        Operations, PipelineCache, RenderPassColorAttachment, RenderPassDescriptor,
+        SamplerDescriptor, TextureViewId,
     },
     renderer::RenderContext,
     view::{ExtractedView, ViewMainTexture, ViewTarget},
 };
+use bevy_utils::default;
 
 pub struct FXAANode {
     query: QueryState<(&'static ViewTarget, Option<&'static FXAA>), With<ExtractedView>>,
@@ -82,7 +83,12 @@ impl Node for FXAANode {
             cached_bind_group => {
                 let sampler = render_context
                     .render_device
-                    .create_sampler(&SamplerDescriptor::default());
+                    .create_sampler(&SamplerDescriptor {
+                        mipmap_filter: FilterMode::Linear,
+                        mag_filter: FilterMode::Linear,
+                        min_filter: FilterMode::Linear,
+                        ..default()
+                    });
 
                 let bind_group =
                     render_context
