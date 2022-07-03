@@ -19,9 +19,6 @@ use crate::fullscreen_vertex_shader::fullscreen_shader_vertex_state;
 const FXAA_SHADER_HANDLE: HandleUntyped =
     HandleUntyped::weak_from_u64(Shader::TYPE_UUID, 17015358199668024512);
 
-const FXAA_SHARED_SHADER_HANDLE: HandleUntyped =
-    HandleUntyped::weak_from_u64(Shader::TYPE_UUID, 2499420578245347910);
-
 const BLIT_SHADER_HANDLE: HandleUntyped =
     HandleUntyped::weak_from_u64(Shader::TYPE_UUID, 2982161071241723543);
 
@@ -30,12 +27,6 @@ pub struct FXAAPlugin;
 impl Plugin for FXAAPlugin {
     fn build(&self, app: &mut App) {
         load_internal_asset!(app, FXAA_SHADER_HANDLE, "fxaa.wgsl", Shader::from_wgsl);
-        load_internal_asset!(
-            app,
-            FXAA_SHARED_SHADER_HANDLE,
-            "fxaa_shared.wgsl",
-            Shader::from_wgsl
-        );
         load_internal_asset!(app, BLIT_SHADER_HANDLE, "blit.wgsl", Shader::from_wgsl);
 
         app.add_plugin(ExtractComponentPlugin::<FXAA>::default());
