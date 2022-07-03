@@ -18,19 +18,14 @@ let ITERATIONS: i32 = 12; //default is 12
 let SUBPIXEL_QUALITY: f32 = 0.75;
 // #define QUALITY(q) ((q) < 5 ? 1.0 : ((q) > 5 ? ((q) < 10 ? 2.0 : ((q) < 11 ? 4.0 : 8.0)) : 1.5))
 fn QUALITY(q: i32) -> f32 {
-    var v = 1.5;
-    if (q < 5) {
-        v = 1.0;
-    } else if (q > 5) {
-        if (q < 10) {
-            v = 2.0;
-        } else if (q < 11) {
-            v = 4.0;
-        } else {
-            v = 8.0;
-        }
+    switch (q) {
+        //case 0, 1, 2, 3, 4: { return 1.0; }
+        default:              { return 1.0; }
+        case 5:               { return 1.5; }
+        case 6, 7, 8, 9:      { return 2.0; }
+        case 10:              { return 4.0; }
+        case 11:              { return 8.0; }
     }
-    return v;
 }
 
 fn rgb2luma(rgb: vec3<f32>) -> f32 {
