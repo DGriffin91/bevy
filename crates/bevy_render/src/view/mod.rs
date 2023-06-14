@@ -43,14 +43,17 @@ impl Plugin for ViewPlugin {
         app.register_type::<ComputedVisibility>()
             .register_type::<ComputedVisibilityFlags>()
             .register_type::<Msaa>()
+            .register_type::<Ssaa>()
             .register_type::<NoFrustumCulling>()
             .register_type::<RenderLayers>()
             .register_type::<Visibility>()
             .register_type::<VisibleEntities>()
             .register_type::<ColorGrading>()
             .init_resource::<Msaa>()
+            .init_resource::<Ssaa>()
             // NOTE: windows.is_changed() handles cases where a window was resized
             .add_plugin(ExtractResourcePlugin::<Msaa>::default())
+            .add_plugin(ExtractResourcePlugin::<Ssaa>::default())
             .add_plugin(VisibilityPlugin);
 
         if let Ok(render_app) = app.get_sub_app_mut(RenderApp) {
@@ -102,6 +105,27 @@ impl Msaa {
     pub fn samples(&self) -> u32 {
         *self as u32
     }
+}
+
+/// Configuration resource for [Super-Sample Anti-Aliasing](https://en.wikipedia.org/wiki/Supersampling).
+///
+/// To use SSAA, MSAA also needs to be enabled. The number of samples set for
+/// MSAA determines the number used for SSAA.
+///
+/// # Example
+/// ```
+/// # use bevy_app::prelude::App;
+/// # use bevy_render::prelude::Ssaa;
+/// # use bevy_render::prelude::Msaa;
+/// App::new()
+///     .insert_resource(Msaa::default())
+///     .insert_resource(Ssaa {enabled: true})
+///     .run();
+/// ```
+#[derive(Resource, Default, Clone, Copy, ExtractResource, Reflect, PartialEq, PartialOrd)]
+#[reflect(Resource)]
+pub struct Ssaa {
+    pub enabled: bool,
 }
 
 #[derive(Component)]

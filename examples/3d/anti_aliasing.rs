@@ -21,6 +21,7 @@ use bevy::{
 fn main() {
     App::new()
         .insert_resource(Msaa::Off)
+        .insert_resource(Ssaa { enabled: false })
         .add_plugins(DefaultPlugins)
         .add_plugin(TemporalAntiAliasPlugin)
         .add_systems(Startup, setup)
@@ -39,6 +40,7 @@ fn modify_aa(
         With<Camera>,
     >,
     mut msaa: ResMut<Msaa>,
+    mut ssaa: ResMut<Ssaa>,
     mut commands: Commands,
 ) {
     let (camera_entity, fxaa, taa) = camera.single_mut();
@@ -57,9 +59,10 @@ fn modify_aa(
         camera.remove::<TemporalAntiAliasBundle>();
 
         *msaa = Msaa::Sample4;
+        ssaa.enabled = false;
     }
 
-    // MSAA Sample Count
+    // MSAA/SSAA Sample Count
     if *msaa != Msaa::Off {
         if keys.just_pressed(KeyCode::Q) {
             *msaa = Msaa::Sample2;
@@ -72,8 +75,17 @@ fn modify_aa(
         }
     }
 
+    // SSAA
+    if keys.just_pressed(KeyCode::Key3) && (*msaa == Msaa::Off || ssaa.enabled == false) {
+        camera.remove::<Fxaa>();
+        camera.remove::<TemporalAntiAliasBundle>();
+
+        *msaa = Msaa::Sample4;
+        ssaa.enabled = true;
+    }
+
     // FXAA
-    if keys.just_pressed(KeyCode::Key3) && fxaa.is_none() {
+    if keys.just_pressed(KeyCode::Key4) && fxaa.is_none() {
         *msaa = Msaa::Off;
         camera.remove::<TemporalAntiAliasBundle>();
 
@@ -105,7 +117,7 @@ fn modify_aa(
     }
 
     // TAA
-    if keys.just_pressed(KeyCode::Key4) && taa.is_none() {
+    if keys.just_pressed(KeyCode::Key5) && taa.is_none() {
         *msaa = Msaa::Off;
         camera.remove::<Fxaa>();
 
@@ -147,6 +159,7 @@ fn update_ui(
         With<Camera>,
     >,
     msaa: Res<Msaa>,
+    ssaa: Res<Ssaa>,
     mut ui: Query<&mut Text>,
 ) {
     let (fxaa, taa, cas_settings) = camera.single();
@@ -168,16 +181,22 @@ fn update_ui(
         ui.push_str("(2) MSAA\n");
     }
 
-    if fxaa.is_some() {
-        ui.push_str("(3) *FXAA*\n");
+    if ssaa.enabled {
+        ui.push_str("(3) *SSAA*\n");
     } else {
-        ui.push_str("(3) FXAA\n");
+        ui.push_str("(3) SSAA\n");
+    }
+
+    if fxaa.is_some() {
+        ui.push_str("(4) *FXAA*\n");
+    } else {
+        ui.push_str("(4) FXAA\n");
     }
 
     if taa.is_some() {
-        ui.push_str("(4) *TAA*");
+        ui.push_str("(5) *TAA*");
     } else {
-        ui.push_str("(4) TAA");
+        ui.push_str("(5) TAA");
     }
 
     if *msaa != Msaa::Off {

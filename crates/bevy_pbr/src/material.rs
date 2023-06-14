@@ -36,7 +36,7 @@ use bevy_render::{
     },
     renderer::RenderDevice,
     texture::FallbackImage,
-    view::{ExtractedView, Msaa, VisibleEntities},
+    view::{ExtractedView, Msaa, Ssaa, VisibleEntities},
     Extract, ExtractSchedule, Render, RenderApp, RenderSet,
 };
 use bevy_utils::{tracing::error, HashMap, HashSet};
@@ -381,6 +381,7 @@ pub fn queue_material_meshes<M: Material>(
     render_materials: Res<RenderMaterials<M>>,
     material_meshes: Query<(&Handle<M>, &Handle<Mesh>, &MeshUniform)>,
     images: Res<RenderAssets<Image>>,
+    ssaa: Option<Res<Ssaa>>,
     mut views: Query<(
         &ExtractedView,
         &VisibleEntities,
@@ -422,6 +423,12 @@ pub fn queue_material_meshes<M: Material>(
 
         if taa_settings.is_some() {
             view_key |= MeshPipelineKey::TAA;
+        }
+
+        if let Some(ssaa) = &ssaa {
+            if ssaa.enabled {
+                view_key |= MeshPipelineKey::SSAA;
+            }
         }
 
         let environment_map_loaded = match environment_map {
