@@ -4,9 +4,15 @@
 use std::f32::consts::*;
 
 use bevy::{pbr::AmbientLight, prelude::*, render::mesh::skinning::SkinnedMesh};
+use bevy_internal::{
+    core_pipeline::prepass::{DeferredPrepass, DepthPrepass},
+    pbr::{DefaultOpaqueRendererMethod, OpaqueRendererMethod},
+};
 
 fn main() {
     App::new()
+        .insert_resource(Msaa::Off)
+        .insert_resource(DefaultOpaqueRendererMethod(OpaqueRendererMethod::Deferred))
         .add_plugins(DefaultPlugins)
         .insert_resource(AmbientLight {
             brightness: 1.0,
@@ -19,10 +25,14 @@ fn main() {
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     // Create a camera
-    commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-        ..default()
-    });
+    commands.spawn((
+        Camera3dBundle {
+            transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+            ..default()
+        },
+        DepthPrepass,
+        DeferredPrepass,
+    ));
 
     // Spawn the first scene in `models/SimpleSkin/SimpleSkin.gltf`
     commands.spawn(SceneBundle {

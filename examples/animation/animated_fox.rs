@@ -5,9 +5,15 @@ use std::time::Duration;
 
 use bevy::pbr::CascadeShadowConfigBuilder;
 use bevy::prelude::*;
+use bevy_internal::{
+    core_pipeline::prepass::{DeferredPrepass, DepthPrepass},
+    pbr::{DefaultOpaqueRendererMethod, OpaqueRendererMethod},
+};
 
 fn main() {
     App::new()
+        .insert_resource(Msaa::Off)
+        .insert_resource(DefaultOpaqueRendererMethod(OpaqueRendererMethod::Deferred))
         .add_plugins(DefaultPlugins)
         .insert_resource(AmbientLight {
             color: Color::WHITE,
@@ -38,11 +44,15 @@ fn setup(
     ]));
 
     // Camera
-    commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(100.0, 100.0, 150.0)
-            .looking_at(Vec3::new(0.0, 20.0, 0.0), Vec3::Y),
-        ..default()
-    });
+    commands.spawn((
+        Camera3dBundle {
+            transform: Transform::from_xyz(100.0, 100.0, 150.0)
+                .looking_at(Vec3::new(0.0, 20.0, 0.0), Vec3::Y),
+            ..default()
+        },
+        DepthPrepass,
+        DeferredPrepass,
+    ));
 
     // Plane
     commands.spawn(PbrBundle {

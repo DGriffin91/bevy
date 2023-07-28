@@ -8,10 +8,16 @@
 //! - How to play morph target animations in [`setup_animations`].
 
 use bevy::prelude::*;
+use bevy_internal::{
+    core_pipeline::prepass::{DeferredPrepass, DepthPrepass},
+    pbr::{DefaultOpaqueRendererMethod, OpaqueRendererMethod},
+};
 use std::f32::consts::PI;
 
 fn main() {
     App::new()
+        .insert_resource(Msaa::Off)
+        .insert_resource(DefaultOpaqueRendererMethod(OpaqueRendererMethod::Deferred))
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "morph targets".to_string(),
@@ -52,10 +58,14 @@ fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
         transform: Transform::from_rotation(Quat::from_rotation_z(PI / 2.0)),
         ..default()
     });
-    commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(3.0, 2.1, 10.2).looking_at(Vec3::ZERO, Vec3::Y),
-        ..default()
-    });
+    commands.spawn((
+        Camera3dBundle {
+            transform: Transform::from_xyz(3.0, 2.1, 10.2).looking_at(Vec3::ZERO, Vec3::Y),
+            ..default()
+        },
+        DepthPrepass,
+        DeferredPrepass,
+    ));
 }
 
 /// Plays an [`AnimationClip`] from the loaded [`Gltf`] on the [`AnimationPlayer`] created by the spawned scene.

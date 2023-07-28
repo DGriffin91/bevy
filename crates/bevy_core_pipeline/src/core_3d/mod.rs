@@ -524,11 +524,78 @@ pub fn prepare_prepass_textures(
                 .clone()
         });
 
+        let cached_deferred_texture2 = deferred_prepass.is_some().then(|| {
+            deferred_textures
+                .entry(camera.target.clone())
+                .or_insert_with(|| {
+                    texture_cache.get(
+                        &render_device,
+                        TextureDescriptor {
+                            label: Some("prepass_deferred_texture"),
+                            size,
+                            mip_level_count: 1,
+                            sample_count: 1,
+                            dimension: TextureDimension::D2,
+                            format: DEFERRED_PREPASS_FORMAT,
+                            usage: TextureUsages::RENDER_ATTACHMENT
+                                | TextureUsages::TEXTURE_BINDING,
+                            view_formats: &[],
+                        },
+                    )
+                })
+                .clone()
+        });
+
+        let cached_deferred_texture3 = deferred_prepass.is_some().then(|| {
+            deferred_textures
+                .entry(camera.target.clone())
+                .or_insert_with(|| {
+                    texture_cache.get(
+                        &render_device,
+                        TextureDescriptor {
+                            label: Some("prepass_deferred_texture"),
+                            size,
+                            mip_level_count: 1,
+                            sample_count: 1,
+                            dimension: TextureDimension::D2,
+                            format: DEFERRED_PREPASS_FORMAT,
+                            usage: TextureUsages::RENDER_ATTACHMENT
+                                | TextureUsages::TEXTURE_BINDING,
+                            view_formats: &[],
+                        },
+                    )
+                })
+                .clone()
+        });
+        let cached_deferred_texture4 = deferred_prepass.is_some().then(|| {
+            deferred_textures
+                .entry(camera.target.clone())
+                .or_insert_with(|| {
+                    texture_cache.get(
+                        &render_device,
+                        TextureDescriptor {
+                            label: Some("prepass_deferred_texture"),
+                            size,
+                            mip_level_count: 1,
+                            sample_count: 1,
+                            dimension: TextureDimension::D2,
+                            format: DEFERRED_PREPASS_FORMAT,
+                            usage: TextureUsages::RENDER_ATTACHMENT
+                                | TextureUsages::TEXTURE_BINDING,
+                            view_formats: &[],
+                        },
+                    )
+                })
+                .clone()
+        });
         commands.entity(entity).insert(ViewPrepassTextures {
             depth: cached_depth_texture,
             normal: cached_normals_texture,
             motion_vectors: cached_motion_vectors_texture,
             deferred: cached_deferred_texture,
+            deferred2: cached_deferred_texture2,
+            deferred3: cached_deferred_texture3,
+            deferred4: cached_deferred_texture4,
             size,
         });
     }

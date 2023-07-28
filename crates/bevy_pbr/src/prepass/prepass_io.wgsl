@@ -85,6 +85,9 @@ struct FragmentOutput {
 
 #ifdef DEFERRED_PREPASS
     @location(2) deferred: vec4<u32>,
+    @location(3) deferredb: vec4<u32>,
+    @location(4) deferredc: vec4<u32>,
+    @location(5) deferredd: vec4<u32>,
 #endif
 
 #ifdef DEPTH_CLAMP_ORTHO

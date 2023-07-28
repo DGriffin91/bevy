@@ -2,7 +2,7 @@
 #import bevy_core_pipeline::fullscreen_vertex_shader
 
 #import bevy_pbr::prepass_utils
-#import bevy_pbr::pbr_types STANDARD_MATERIAL_FLAGS_FOG_ENABLED_BIT, STANDARD_MATERIAL_FLAGS_UNLIT_BIT
+#import bevy_pbr::pbr_types STANDARD_MATERIAL_FLAGS_FOG_ENABLED_BIT, STANDARD_MATERIAL_FLAGS_UNLIT_BIT, pbr_input_new
 #import bevy_pbr::pbr_functions as pbr_functions
 #import bevy_pbr::pbr_deferred_types as deft
 #import bevy_pbr::pbr_deferred_functions pbr_input_from_deferred_gbuffer, unpack_unorm3x4_plus_unorm_20_
@@ -19,6 +19,13 @@
 
 @fragment
 fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
+    if true {
+        //var a = pbr_input_new();
+        let depth = bevy_pbr::prepass_utils::prepass_depth(in.position, 0u);
+        //a.material.emissive = vec3(1.0);
+        //let col = pbr_functions::pbr(a);
+        return vec4(vec3(depth), 1.0);
+    }
     var frag_coord = vec4(in.position.xy, 0.0, 0.0);
 
     let deferred_data = textureLoad(deferred_prepass_texture, vec2<i32>(frag_coord.xy), 0);

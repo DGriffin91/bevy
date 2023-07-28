@@ -77,6 +77,9 @@ pub struct ViewPrepassTextures {
     pub deferred: Option<CachedTexture>,
     /// The size of the textures.
     pub size: Extent3d,
+    pub deferred2: Option<CachedTexture>,
+    pub deferred3: Option<CachedTexture>,
+    pub deferred4: Option<CachedTexture>,
 }
 
 /// Opaque phase of the 3D prepass.
