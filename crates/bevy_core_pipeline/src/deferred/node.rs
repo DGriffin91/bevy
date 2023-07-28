@@ -58,6 +58,7 @@ impl ViewNode for DeferredNode {
         ): QueryItem<Self::ViewQuery>,
         world: &World,
     ) -> Result<(), NodeRunError> {
+        render_context.begin_debug_scope("Deferred");
         let view_entity = graph.view_entity();
 
         if let Some(msaa) = world.get_resource::<Msaa>() {
@@ -241,6 +242,7 @@ impl ViewNode for DeferredNode {
             );
         }
 
+        render_context.end_debug_scope();
         Ok(())
     }
 }

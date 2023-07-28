@@ -61,6 +61,7 @@ use bevy_utils::{FloatOrd, HashMap};
 use crate::{
     deferred::{
         node::DeferredNode, AlphaMask3dDeferred, Opaque3dDeferred, DEFERRED_PREPASS_FORMAT,
+        DEFERRED_PREPASS_FORMAT2,
     },
     prepass::{
         node::PrepassNode, AlphaMask3dPrepass, DeferredPrepass, DepthPrepass, MotionVectorPrepass,
@@ -422,7 +423,7 @@ pub fn prepare_prepass_textures(
 ) {
     let mut depth_textures = HashMap::default();
     let mut normal_textures = HashMap::default();
-    let mut deferred_textures = HashMap::default();
+    //let mut deferred_textures = HashMap::default();
     let mut motion_vectors_textures = HashMap::default();
     for (entity, camera, depth_prepass, normal_prepass, motion_vector_prepass, deferred_prepass) in
         &views_3d
@@ -503,91 +504,67 @@ pub fn prepare_prepass_textures(
         });
 
         let cached_deferred_texture = deferred_prepass.is_some().then(|| {
-            deferred_textures
-                .entry(camera.target.clone())
-                .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("prepass_deferred_texture"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: 1,
-                            dimension: TextureDimension::D2,
-                            format: DEFERRED_PREPASS_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
-                })
-                .clone()
+            texture_cache.get(
+                &render_device,
+                TextureDescriptor {
+                    label: Some("prepass_deferred_texture"),
+                    size,
+                    mip_level_count: 1,
+                    sample_count: 1,
+                    dimension: TextureDimension::D2,
+                    format: DEFERRED_PREPASS_FORMAT,
+                    usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                    view_formats: &[],
+                },
+            )
         });
 
         let cached_deferred_texture2 = deferred_prepass.is_some().then(|| {
-            deferred_textures
-                .entry(camera.target.clone())
-                .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("prepass_deferred_texture"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: 1,
-                            dimension: TextureDimension::D2,
-                            format: DEFERRED_PREPASS_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
-                })
-                .clone()
+            texture_cache.get(
+                &render_device,
+                TextureDescriptor {
+                    label: Some("prepass_deferred_texture"),
+                    size,
+                    mip_level_count: 1,
+                    sample_count: 1,
+                    dimension: TextureDimension::D2,
+                    format: DEFERRED_PREPASS_FORMAT,
+                    usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                    view_formats: &[],
+                },
+            )
         });
-
         let cached_deferred_texture3 = deferred_prepass.is_some().then(|| {
-            deferred_textures
-                .entry(camera.target.clone())
-                .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("prepass_deferred_texture"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: 1,
-                            dimension: TextureDimension::D2,
-                            format: DEFERRED_PREPASS_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
-                })
-                .clone()
+            texture_cache.get(
+                &render_device,
+                TextureDescriptor {
+                    label: Some("prepass_deferred_texture"),
+                    size,
+                    mip_level_count: 1,
+                    sample_count: 1,
+                    dimension: TextureDimension::D2,
+                    format: DEFERRED_PREPASS_FORMAT,
+                    usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                    view_formats: &[],
+                },
+            )
         });
         let cached_deferred_texture4 = deferred_prepass.is_some().then(|| {
-            deferred_textures
-                .entry(camera.target.clone())
-                .or_insert_with(|| {
-                    texture_cache.get(
-                        &render_device,
-                        TextureDescriptor {
-                            label: Some("prepass_deferred_texture"),
-                            size,
-                            mip_level_count: 1,
-                            sample_count: 1,
-                            dimension: TextureDimension::D2,
-                            format: DEFERRED_PREPASS_FORMAT,
-                            usage: TextureUsages::RENDER_ATTACHMENT
-                                | TextureUsages::TEXTURE_BINDING,
-                            view_formats: &[],
-                        },
-                    )
-                })
-                .clone()
+            texture_cache.get(
+                &render_device,
+                TextureDescriptor {
+                    label: Some("prepass_deferred_texture"),
+                    size,
+                    mip_level_count: 1,
+                    sample_count: 1,
+                    dimension: TextureDimension::D2,
+                    format: DEFERRED_PREPASS_FORMAT,
+                    usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
+                    view_formats: &[],
+                },
+            )
         });
+
         commands.entity(entity).insert(ViewPrepassTextures {
             depth: cached_depth_texture,
             normal: cached_normals_texture,

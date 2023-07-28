@@ -12,7 +12,15 @@ use bevy::{
     prelude::*,
     render::render_resource::TextureFormat,
 };
-use bevy_internal::window::PresentMode;
+use bevy_internal::{
+    debug_overlays::DebugOverlaysPlugin,
+    diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
+    render::{
+        settings::{WgpuFeatures, WgpuSettings},
+        RenderPlugin,
+    },
+    window::PresentMode,
+};
 
 fn main() {
     App::new()
@@ -23,14 +31,28 @@ fn main() {
             color: Color::WHITE,
             brightness: 1.0,
         })
-        .add_plugins(DefaultPlugins.set(WindowPlugin {
-            primary_window: Some(Window {
-                present_mode: PresentMode::Immediate,
-                ..default()
-            }),
-            ..default()
-        }))
+        .add_plugins(
+            DefaultPlugins
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        present_mode: PresentMode::Immediate,
+                        ..default()
+                    }),
+                    ..default()
+                })
+                .set(RenderPlugin {
+                    wgpu_settings: WgpuSettings {
+                        features: WgpuFeatures::TIMESTAMP_QUERY,
+                        ..default()
+                    },
+                }),
+        )
         .add_systems(Startup, setup)
+        .add_plugins((
+            LogDiagnosticsPlugin::default(),
+            FrameTimeDiagnosticsPlugin::default(),
+            DebugOverlaysPlugin::default(),
+        ))
         .run();
 }
 
@@ -61,7 +83,19 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     });
 
     commands.spawn(SceneBundle {
-        transform: Transform::from_xyz(-12.5, -0.5, -1.0),
+        transform: Transform::from_xyz(-2.5, -0.5, -2.0),
+        scene: helmet_scene.clone(),
+        ..default()
+    });
+
+    commands.spawn(SceneBundle {
+        transform: Transform::from_xyz(-3.5, -0.6, -2.5),
+        scene: helmet_scene.clone(),
+        ..default()
+    });
+
+    commands.spawn(SceneBundle {
+        transform: Transform::from_xyz(-4.5, -0.7, -3.0),
         scene: helmet_scene.clone(),
         ..default()
     });

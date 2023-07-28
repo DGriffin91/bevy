@@ -71,6 +71,7 @@ impl ViewNode for MainOpaquePass3dNode {
             // If the deferred pass has run, don't clear again in this pass.
             LoadOp::Load
         };
+        render_context.begin_debug_scope("Opaque3d");
 
         // Run the opaque pass, sorted front-to-back
         // NOTE: Scoped to drop the mutable borrow of render_context
@@ -133,6 +134,9 @@ impl ViewNode for MainOpaquePass3dNode {
                 render_pass.draw(0..3, 0..1);
             }
         }
+
+        drop(render_pass);
+        render_context.end_debug_scope();
 
         Ok(())
     }

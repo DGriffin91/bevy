@@ -11,6 +11,8 @@ use bevy_utils::FloatOrd;
 
 pub const DEFERRED_PREPASS_FORMAT: TextureFormat = TextureFormat::Rgba32Uint;
 
+pub const DEFERRED_PREPASS_FORMAT2: TextureFormat = TextureFormat::Rgba8Uint;
+
 /// Opaque phase of the 3D Deferred pass.
 ///
 /// Sorted front-to-back by the z-distance in front of the camera.

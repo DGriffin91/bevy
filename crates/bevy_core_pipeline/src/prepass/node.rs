@@ -50,6 +50,8 @@ impl ViewNode for PrepassNode {
     ) -> Result<(), NodeRunError> {
         let view_entity = graph.view_entity();
 
+        render_context.begin_debug_scope("Prepass");
+
         let mut color_attachments = vec![];
         color_attachments.push(
             view_prepass_textures
@@ -133,6 +135,9 @@ impl ViewNode for PrepassNode {
                 );
             }
         }
+
+        render_context.end_debug_scope();
+
         Ok(())
     }
 }

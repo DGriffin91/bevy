@@ -210,6 +210,7 @@ impl ViewNode for TAANode {
                 aspect: TextureAspect::DepthOnly,
                 ..default()
             });
+        render_context.begin_debug_scope("TAA");
 
         let taa_bind_group =
             render_context
@@ -273,6 +274,8 @@ impl ViewNode for TAANode {
             }
             taa_pass.draw(0..3, 0..1);
         }
+
+        render_context.end_debug_scope();
 
         Ok(())
     }

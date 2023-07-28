@@ -2,7 +2,9 @@ use bevy_app::{Plugin, PreUpdate};
 use bevy_asset::{load_internal_asset, AssetServer, Handle, HandleUntyped};
 use bevy_core_pipeline::{
     core_3d::CORE_3D_DEPTH_FORMAT,
-    deferred::{AlphaMask3dDeferred, Opaque3dDeferred, DEFERRED_PREPASS_FORMAT},
+    deferred::{
+        AlphaMask3dDeferred, Opaque3dDeferred, DEFERRED_PREPASS_FORMAT, DEFERRED_PREPASS_FORMAT2,
+    },
     prelude::Camera3d,
     prepass::{
         AlphaMask3dPrepass, DeferredPrepass, DepthPrepass, MotionVectorPrepass, NormalPrepass,
