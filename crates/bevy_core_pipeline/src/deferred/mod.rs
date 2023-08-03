@@ -9,7 +9,7 @@ use bevy_render::{
 };
 use bevy_utils::FloatOrd;
 
-pub const DEFERRED_PREPASS_FORMAT: TextureFormat = TextureFormat::Rgba32Uint;
+pub const DEFERRED_PREPASS_FORMAT: TextureFormat = TextureFormat::Rgba16Uint;
 
 pub const DEFERRED_PREPASS_FORMAT2: TextureFormat = TextureFormat::Rgba8Uint;
 

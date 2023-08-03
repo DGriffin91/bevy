@@ -168,8 +168,8 @@ fn fragment(
         //out.deferred = pbr_deferred_functions::deferred_gbuffer_from_pbr_input(pbr_input, in.position.z);
         out.deferred = vec4(255u);
         out.deferredb = vec4(255u);
-        out.deferredc = vec4(255u);
-        out.deferredd = vec4(255u);
+        //out.deferredc = vec4(255u);
+        //out.deferredd = vec4(255u);
 #ifdef NORMAL_PREPASS
         out.normal = vec4(pbr_input.N * 0.5 + vec3(0.5), 1.0);
 #endif

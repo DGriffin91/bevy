@@ -136,42 +136,42 @@ impl ViewNode for DeferredNode {
                     },
                 }),
         );
-        color_attachments.push(
-            view_prepass_textures
-                .deferred3
-                .as_ref()
-                .map(|deferred_texture| RenderPassColorAttachment {
-                    view: &deferred_texture.default_view,
-                    resolve_target: None,
-                    ops: Operations {
-                        // If we clear with LoadOp::Clear(Default::default()) we get these errors:
-                        // Chrome: GL_INVALID_OPERATION: No defined conversion between clear value and attachment format.
-                        // Firefox: WebGL warning: clearBufferu?[fi]v: This attachment is of type FLOAT, but this function is of type UINT.
-                        // It should by ok to not clear since we are using the stencil buffer to identify which
-                        // pixels the deferred lighting passes should run on. And the depth buffer is cleared.
-                        load: LoadOp::Load,
-                        store: true,
-                    },
-                }),
-        );
-        color_attachments.push(
-            view_prepass_textures
-                .deferred4
-                .as_ref()
-                .map(|deferred_texture| RenderPassColorAttachment {
-                    view: &deferred_texture.default_view,
-                    resolve_target: None,
-                    ops: Operations {
-                        // If we clear with LoadOp::Clear(Default::default()) we get these errors:
-                        // Chrome: GL_INVALID_OPERATION: No defined conversion between clear value and attachment format.
-                        // Firefox: WebGL warning: clearBufferu?[fi]v: This attachment is of type FLOAT, but this function is of type UINT.
-                        // It should by ok to not clear since we are using the stencil buffer to identify which
-                        // pixels the deferred lighting passes should run on. And the depth buffer is cleared.
-                        load: LoadOp::Load,
-                        store: true,
-                    },
-                }),
-        );
+        //color_attachments.push(
+        //    view_prepass_textures
+        //        .deferred3
+        //        .as_ref()
+        //        .map(|deferred_texture| RenderPassColorAttachment {
+        //            view: &deferred_texture.default_view,
+        //            resolve_target: None,
+        //            ops: Operations {
+        //                // If we clear with LoadOp::Clear(Default::default()) we get these errors:
+        //                // Chrome: GL_INVALID_OPERATION: No defined conversion between clear value and attachment format.
+        //                // Firefox: WebGL warning: clearBufferu?[fi]v: This attachment is of type FLOAT, but this function is of type UINT.
+        //                // It should by ok to not clear since we are using the stencil buffer to identify which
+        //                // pixels the deferred lighting passes should run on. And the depth buffer is cleared.
+        //                load: LoadOp::Load,
+        //                store: true,
+        //            },
+        //        }),
+        //);
+        //color_attachments.push(
+        //    view_prepass_textures
+        //        .deferred4
+        //        .as_ref()
+        //        .map(|deferred_texture| RenderPassColorAttachment {
+        //            view: &deferred_texture.default_view,
+        //            resolve_target: None,
+        //            ops: Operations {
+        //                // If we clear with LoadOp::Clear(Default::default()) we get these errors:
+        //                // Chrome: GL_INVALID_OPERATION: No defined conversion between clear value and attachment format.
+        //                // Firefox: WebGL warning: clearBufferu?[fi]v: This attachment is of type FLOAT, but this function is of type UINT.
+        //                // It should by ok to not clear since we are using the stencil buffer to identify which
+        //                // pixels the deferred lighting passes should run on. And the depth buffer is cleared.
+        //                load: LoadOp::Load,
+        //                store: true,
+        //            },
+        //        }),
+        //);
         if color_attachments.iter().all(Option::is_none) {
             // All attachments are none: clear the attachment list so that no fragment shader is required.
             color_attachments.clear();

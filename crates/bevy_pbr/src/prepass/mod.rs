@@ -510,29 +510,29 @@ where
                 key.mesh_key
                     .contains(MeshPipelineKey::DEFERRED_PREPASS)
                     .then_some(ColorTargetState {
-                        format: DEFERRED_PREPASS_FORMAT,
+                        format: DEFERRED_PREPASS_FORMAT2,
                         blend: None,
                         write_mask: ColorWrites::ALL,
                     }),
             );
-            targets.push(
-                key.mesh_key
-                    .contains(MeshPipelineKey::DEFERRED_PREPASS)
-                    .then_some(ColorTargetState {
-                        format: DEFERRED_PREPASS_FORMAT,
-                        blend: None,
-                        write_mask: ColorWrites::ALL,
-                    }),
-            );
-            targets.push(
-                key.mesh_key
-                    .contains(MeshPipelineKey::DEFERRED_PREPASS)
-                    .then_some(ColorTargetState {
-                        format: DEFERRED_PREPASS_FORMAT,
-                        blend: None,
-                        write_mask: ColorWrites::ALL,
-                    }),
-            );
+            //targets.push(
+            //    key.mesh_key
+            //        .contains(MeshPipelineKey::DEFERRED_PREPASS)
+            //        .then_some(ColorTargetState {
+            //            format: DEFERRED_PREPASS_FORMAT,
+            //            blend: None,
+            //            write_mask: ColorWrites::ALL,
+            //        }),
+            //);
+            //targets.push(
+            //    key.mesh_key
+            //        .contains(MeshPipelineKey::DEFERRED_PREPASS)
+            //        .then_some(ColorTargetState {
+            //            format: DEFERRED_PREPASS_FORMAT,
+            //            blend: None,
+            //            write_mask: ColorWrites::ALL,
+            //        }),
+            //);
         }
 
         if targets.iter().all(Option::is_none) {

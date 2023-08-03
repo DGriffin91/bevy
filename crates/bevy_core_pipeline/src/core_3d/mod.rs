@@ -528,7 +528,7 @@ pub fn prepare_prepass_textures(
                     mip_level_count: 1,
                     sample_count: 1,
                     dimension: TextureDimension::D2,
-                    format: DEFERRED_PREPASS_FORMAT,
+                    format: DEFERRED_PREPASS_FORMAT2,
                     usage: TextureUsages::RENDER_ATTACHMENT | TextureUsages::TEXTURE_BINDING,
                     view_formats: &[],
                 },
@@ -571,8 +571,8 @@ pub fn prepare_prepass_textures(
             motion_vectors: cached_motion_vectors_texture,
             deferred: cached_deferred_texture,
             deferred2: cached_deferred_texture2,
-            deferred3: cached_deferred_texture3,
-            deferred4: cached_deferred_texture4,
+            //deferred3: cached_deferred_texture3,
+            //deferred4: cached_deferred_texture4,
             size,
         });
     }
