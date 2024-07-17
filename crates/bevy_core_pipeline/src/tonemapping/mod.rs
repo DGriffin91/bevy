@@ -28,9 +28,9 @@ const TONEMAPPING_SHARED_SHADER_HANDLE: Handle<Shader> =
 /// 3D LUT (look up table) textures used for tonemapping
 #[derive(Resource, Clone, ExtractResource)]
 pub struct TonemappingLuts {
-    blender_filmic: Handle<Image>,
-    agx: Handle<Image>,
-    tony_mc_mapface: Handle<Image>,
+    pub blender_filmic: Handle<Image>,  // bs13 edit, make public
+    pub agx: Handle<Image>,             // bs13 edit, make public
+    pub tony_mc_mapface: Handle<Image>, // bs13 edit, make public
 }
 
 pub struct TonemappingPlugin;
