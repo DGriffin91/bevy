@@ -271,21 +271,21 @@ impl From<CascadeShadowConfigBuilder> for CascadeShadowConfig {
 #[reflect(Component)]
 pub struct Cascades {
     /// Map from a view to the configuration of each of its [`Cascade`]s.
-    pub(crate) cascades: EntityHashMap<Vec<Cascade>>,
+    pub cascades: EntityHashMap<Vec<Cascade>>, // bs13 edit
 }
 
 #[derive(Clone, Debug, Default, Reflect)]
 pub struct Cascade {
     /// The transform of the light, i.e. the view to world matrix.
-    pub(crate) world_from_cascade: Mat4,
+    pub world_from_cascade: Mat4, // bs13 edit
     /// The orthographic projection for this cascade.
-    pub(crate) clip_from_cascade: Mat4,
+    pub clip_from_cascade: Mat4, // bs13 edit
     /// The view-projection matrix for this cascade, converting world space into light clip space.
     /// Importantly, this is derived and stored separately from `view_transform` and `projection` to
     /// ensure shadow stability.
-    pub(crate) clip_from_world: Mat4,
+    pub clip_from_world: Mat4, // bs13 edit
     /// Size of each shadow map texel in world units.
-    pub(crate) texel_size: f32,
+    pub texel_size: f32, // bs13 edit
 }
 
 pub fn clear_directional_light_cascades(mut lights: Query<(&DirectionalLight, &mut Cascades)>) {

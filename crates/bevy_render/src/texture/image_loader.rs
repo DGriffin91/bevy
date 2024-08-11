@@ -140,7 +140,11 @@ impl FromWorld for ImageLoader {
         let supported_compressed_formats = match world.get_resource::<RenderDevice>() {
             Some(render_device) => CompressedImageFormats::from_features(render_device.features()),
 
+            /*
+            // bs13 edit
             None => CompressedImageFormats::NONE,
+            */
+            None => CompressedImageFormats::BC,
         };
         Self {
             supported_compressed_formats,
