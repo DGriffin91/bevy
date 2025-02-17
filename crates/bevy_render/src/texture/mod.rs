@@ -115,7 +115,7 @@ impl Plugin for ImagePlugin {
                 Some(render_device) => {
                     CompressedImageFormats::from_features(render_device.features())
                 }
-                None => CompressedImageFormats::NONE,
+                None => CompressedImageFormats::BC,
             };
             app.register_asset_loader(ImageLoader::new(supported_compressed_formats));
         }
