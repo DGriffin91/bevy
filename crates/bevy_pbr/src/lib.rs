@@ -186,72 +186,79 @@ pub struct DfgLut {
     pub texture: Handle<Image>,
 }
 
+#[derive(Resource, Clone, Default)]
+pub struct MinimalPbr;
+
 impl Plugin for PbrPlugin {
     fn build(&self, app: &mut App) {
-        load_shader_library!(app, "render/pbr_types.wgsl");
-        load_shader_library!(app, "render/pbr_bindings.wgsl");
-        load_shader_library!(app, "render/utils.wgsl");
-        load_shader_library!(app, "render/clustered_forward.wgsl");
-        load_shader_library!(app, "render/pbr_lighting.wgsl");
-        load_shader_library!(app, "render/shadows.wgsl");
-        load_shader_library!(app, "deferred/pbr_deferred_types.wgsl");
-        load_shader_library!(app, "deferred/pbr_deferred_functions.wgsl");
-        load_shader_library!(app, "render/shadow_sampling.wgsl");
-        load_shader_library!(app, "render/pbr_functions.wgsl");
-        load_shader_library!(app, "render/rgb9e5.wgsl");
-        load_shader_library!(app, "render/pbr_ambient.wgsl");
-        load_shader_library!(app, "render/pbr_fragment.wgsl");
-        load_shader_library!(app, "render/pbr.wgsl");
-        load_shader_library!(app, "render/pbr_prepass_functions.wgsl");
-        load_shader_library!(app, "render/pbr_prepass.wgsl");
-        load_shader_library!(app, "render/parallax_mapping.wgsl");
-        load_shader_library!(app, "render/view_transformations.wgsl");
+        let minimal_pbr = app.world().is_resource_added::<MinimalPbr>();
+        if !minimal_pbr {
+            load_shader_library!(app, "render/pbr_types.wgsl");
+            load_shader_library!(app, "render/pbr_bindings.wgsl");
+            load_shader_library!(app, "render/utils.wgsl");
+            load_shader_library!(app, "render/clustered_forward.wgsl");
+            load_shader_library!(app, "render/pbr_lighting.wgsl");
+            load_shader_library!(app, "render/shadows.wgsl");
+            load_shader_library!(app, "deferred/pbr_deferred_types.wgsl");
+            load_shader_library!(app, "deferred/pbr_deferred_functions.wgsl");
+            load_shader_library!(app, "render/shadow_sampling.wgsl");
+            load_shader_library!(app, "render/pbr_functions.wgsl");
+            load_shader_library!(app, "render/rgb9e5.wgsl");
+            load_shader_library!(app, "render/pbr_ambient.wgsl");
+            load_shader_library!(app, "render/pbr_fragment.wgsl");
+            load_shader_library!(app, "render/pbr.wgsl");
+            load_shader_library!(app, "render/pbr_prepass_functions.wgsl");
+            load_shader_library!(app, "render/pbr_prepass.wgsl");
+            load_shader_library!(app, "render/parallax_mapping.wgsl");
+            load_shader_library!(app, "render/view_transformations.wgsl");
 
-        // Setup dummy shaders for when MeshletPlugin is not used to prevent shader import errors.
-        load_shader_library!(app, "meshlet/dummy_visibility_buffer_resolve.wgsl");
-
+            // Setup dummy shaders for when MeshletPlugin is not used to prevent shader import errors.
+            load_shader_library!(app, "meshlet/dummy_visibility_buffer_resolve.wgsl");
+        }
         app.register_asset_reflect::<StandardMaterial>()
-            .init_resource::<DefaultOpaqueRendererMethod>()
-            .add_plugins((
-                MeshRenderPlugin {
-                    use_gpu_instance_buffer_builder: self.use_gpu_instance_buffer_builder,
-                    debug_flags: self.debug_flags,
-                },
-                MaterialsPlugin {
-                    debug_flags: self.debug_flags,
-                },
-                MaterialPlugin::<StandardMaterial> {
-                    debug_flags: self.debug_flags,
-                    ..Default::default()
-                },
-                ScreenSpaceAmbientOcclusionPlugin,
-                FogPlugin,
-                ExtractResourcePlugin::<DefaultOpaqueRendererMethod>::default(),
-                SyncComponentPlugin::<ShadowFilteringMethod, Self>::default(),
-                LightmapPlugin,
-                LightProbePlugin,
-                GpuMeshPreprocessPlugin {
-                    use_gpu_instance_buffer_builder: self.use_gpu_instance_buffer_builder,
-                },
-                VolumetricFogPlugin,
-                ScreenSpaceReflectionsPlugin,
-                ScreenSpaceTransmissionPlugin,
-                ClusteredDecalPlugin,
-                ContactShadowsPlugin,
-            ))
-            .add_plugins((
-                decal::ForwardDecalPlugin,
-                SyncComponentPlugin::<DirectionalLight, Self>::default(),
-                SyncComponentPlugin::<PointLight, Self>::default(),
-                SyncComponentPlugin::<SpotLight, Self>::default(),
-                SyncComponentPlugin::<RectLight, Self>::default(),
-                SyncComponentPlugin::<AmbientLight, Self>::default(),
-            ))
-            .add_plugins((
-                ScatteringMediumPlugin,
-                AtmospherePlugin,
-                GpuClusteringPlugin,
-            ));
+            .add_plugins(MaterialPlugin::<StandardMaterial> {
+                debug_flags: self.debug_flags,
+                ..Default::default()
+            });
+        if !minimal_pbr {
+            app.init_resource::<DefaultOpaqueRendererMethod>()
+                .add_plugins((
+                    MeshRenderPlugin {
+                        use_gpu_instance_buffer_builder: self.use_gpu_instance_buffer_builder,
+                        debug_flags: self.debug_flags,
+                    },
+                    MaterialsPlugin {
+                        debug_flags: self.debug_flags,
+                    },
+                    ScreenSpaceAmbientOcclusionPlugin,
+                    FogPlugin,
+                    ExtractResourcePlugin::<DefaultOpaqueRendererMethod>::default(),
+                    SyncComponentPlugin::<ShadowFilteringMethod, Self>::default(),
+                    LightmapPlugin,
+                    LightProbePlugin,
+                    GpuMeshPreprocessPlugin {
+                        use_gpu_instance_buffer_builder: self.use_gpu_instance_buffer_builder,
+                    },
+                    VolumetricFogPlugin,
+                    ScreenSpaceReflectionsPlugin,
+                    ScreenSpaceTransmissionPlugin,
+                    ClusteredDecalPlugin,
+                    ContactShadowsPlugin,
+                ))
+                .add_plugins((
+                    decal::ForwardDecalPlugin,
+                    SyncComponentPlugin::<DirectionalLight, Self>::default(),
+                    SyncComponentPlugin::<PointLight, Self>::default(),
+                    SyncComponentPlugin::<SpotLight, Self>::default(),
+                    SyncComponentPlugin::<RectLight, Self>::default(),
+                    SyncComponentPlugin::<AmbientLight, Self>::default(),
+                ))
+                .add_plugins((
+                    ScatteringMediumPlugin,
+                    AtmospherePlugin,
+                    GpuClusteringPlugin,
+                ));
+        }
 
         #[cfg(feature = "bevy_gltf")]
         if self.gltf_enable_standard_materials {

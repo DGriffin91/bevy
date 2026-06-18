@@ -373,18 +373,20 @@ where
     M::Data: PartialEq + Eq + Hash + Clone,
 {
     fn build(&self, app: &mut App) {
-        app.init_asset::<M>()
-            .register_type::<MeshMaterial3d<M>>()
-            .init_resource::<EntitiesNeedingSpecialization<M>>()
-            .add_plugins((ErasedRenderAssetPlugin::<MeshMaterial3d<M>>::default(),))
-            .add_systems(
-                PostUpdate,
-                (
-                    mark_meshes_as_changed_if_their_materials_changed::<M>.ambiguous_with_all(),
-                    check_entities_needing_specialization::<M>.after(AssetEventSystems),
-                )
-                    .after(mark_3d_meshes_as_changed_if_their_assets_changed),
-            );
+        app.init_asset::<M>().register_type::<MeshMaterial3d<M>>();
+        let minimal_pbr = app.world().is_resource_added::<MinimalPbr>();
+        //if !minimal_pbr {
+        //    app.init_resource::<EntitiesNeedingSpecialization<M>>()
+        //        .add_plugins((ErasedRenderAssetPlugin::<MeshMaterial3d<M>>::default(),))
+        //        .add_systems(
+        //            PostUpdate,
+        //            (
+        //                mark_meshes_as_changed_if_their_materials_changed::<M>.ambiguous_with_all(),
+        //                check_entities_needing_specialization::<M>.after(AssetEventSystems),
+        //            )
+        //                .after(mark_3d_meshes_as_changed_if_their_assets_changed),
+        //        );
+        //};
 
         if let Some(render_app) = app.get_sub_app_mut(RenderApp) {
             render_app
